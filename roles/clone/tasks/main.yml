@@ -1,0 +1,8 @@
+- name: Clone a private repository into /opt.
+  git:
+    repo: git@github.com:EpitechIT2020/T-WEB-600-NAN-6-1-ecommerce-ayoub.bayed.git
+    version: master
+    dest: /var/www/html/ecommerce
+    accept_hostkey: yes
+    force: yes
+  become: no

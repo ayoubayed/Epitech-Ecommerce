@@ -1,0 +1,20 @@
+- hosts: ecommerce
+  
+  vars: 
+    domain: ecommerce.local
+    admin: contact@ecommerce.local
+    directory: html/ecommerce/public/
+
+  roles:
+    - checkOS
+    - pkgs
+    - mariaDB
+    - apache2
+    - clone
+    - projectSetup
+  
+  handlers: 
+    - name: restart apache2
+      service: name=apache2 state=restarted
+
+

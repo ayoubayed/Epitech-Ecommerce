@@ -1,0 +1,49 @@
+- name: MariaDB install
+  apt:
+    update_cache: yes
+    name: mariadb-server
+
+- name: Install pip
+  apt:
+    name: python3-pip
+
+- name: Install MySQL python package
+  apt:
+    name: python-mysqldb
+
+- name: Start MariaDB
+  service: name=mysql state=started
+
+- name: Is root password set?
+  command: mysql -u root --execute "SELECT NOW()"
+  register: is_root_password_set
+  ignore_errors: yes
+
+- name: Set root password
+  mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    user: root
+    password: wVt9gJ7hBq
+    host: localhost
+  when: is_root_password_set.rc == 0
+
+- name: Write new configuration file
+  template:
+    src: .my.cnf
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+
+- name: Inform user of mysql root password
+  debug:
+    msg: "MariaDB root password set to wVt9gJ7hBq"
+  when: is_root_password_set.rc == 0
+
+- name: Create user
+  mysql_user:
+    name: ayoubayed
+    password: password
+    priv: '*.*:ALL,GRANT'
+    state: present

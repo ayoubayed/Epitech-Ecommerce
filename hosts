@@ -1,0 +1,2 @@
+[ecommerce]
+192.168.0.35 ansible_user=root ansible_ssh_private_key_file=/home/pmaxime/.ssh/ecommerce

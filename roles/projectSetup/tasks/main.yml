@@ -1,0 +1,43 @@
+- name: Composer install
+  shell: composer install
+  args:
+    chdir: /var/www/html/ecommerce
+
+- name: Remove composer recipes install confirmation
+  shell: composer config extra.symfony.allow-contrib true
+  args:
+    chdir: /var/www/html/ecommerce
+
+- name: 'Composer: install apache-pack'
+  shell: composer require apache-pack
+  args:
+    chdir: /var/www/html/ecommerce
+
+- name: Create database
+  shell: php bin/console doctrine:database:create
+  args:
+    chdir: /var/www/html/ecommerce
+  ignore_errors: yes
+
+- name: Make migrations
+  shell: php bin/console make:migration -n
+  args:
+    chdir: /var/www/html/ecommerce
+  ignore_errors: yes
+
+- name: Migrations migrate
+  shell: php bin/console doctrine:migrations:migrate -n
+  args:
+    chdir: /var/www/html/ecommerce
+  ignore_errors: yes
+
+- name: Generate jwt keypair
+  shell: php bin/console lexik:jwt:generate-keypair
+  args:
+    chdir: /var/www/html/ecommerce
+  ignore_errors: yes
+
+- name: 'Composer: install apache-pack'
+  shell: composer require lexik/jwt-authentication-bundle
+  args:
+    chdir: /var/www/html/ecommerce
